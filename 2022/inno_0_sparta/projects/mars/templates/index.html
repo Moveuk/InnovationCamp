@@ -67,11 +67,13 @@
                         let name = rows[i]['name'];
                         let address = rows[i]['address'];
                         let size = rows[i]['size'];
+                        let price = rows[i]['price'];
 
                         let temp_html = `        <tr>
             <td>${name}</td>
             <td>${address}</td>
             <td>${size}</td>
+            <td>${price}</td>
         </tr>`;
                         $('#order-box').append(temp_html)
                     }
@@ -132,6 +134,7 @@
             <th scope="col">이름</th>
             <th scope="col">주소</th>
             <th scope="col">평수</th>
+            <th scope="col">가격</th>
         </tr>
         </thead>
         <tbody id="order-box">

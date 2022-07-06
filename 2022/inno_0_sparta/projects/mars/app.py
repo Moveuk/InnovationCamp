@@ -1,8 +1,9 @@
+import re
 from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://test:비밀번호@cluster0.8qrmv.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://test:test1234@cluster0.8qrmv.mongodb.net/?retryWrites=true&w=majority')
 db = client.mongoTest
 
 @app.route('/')
@@ -14,11 +15,14 @@ def web_mars_post():
     name_receive = request.form['name_give']
     address_receive = request.form['address_give']
     size_receive = request.form['size_give']
+    price = int(re.sub(r'[^0-9]', '', size_receive)) * 500
+    print(price)
 
     doc = {
         'name': name_receive,
         'address': address_receive,
-        'size': size_receive
+        'size': size_receive,
+        'price': price
     }
     db.mars.insert_one(doc)
 
