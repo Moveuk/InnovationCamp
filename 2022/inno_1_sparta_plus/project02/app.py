@@ -5,32 +5,45 @@ import requests
 
 app = Flask(__name__)
 
-client = MongoClient('52.78.235.109', 27017, username="test", password="test1234")
+client = MongoClient('mongodb+srv://cluster0.8qrmv.mongodb.net/?retryWrites=true&w=majority', 27017, username="test", password="test1234")
 db = client.dbsparta_plus_week2
 
 
 @app.route('/')
 def main():
     # DB에서 저장된 단어 찾아서 HTML에 나타내기
-    return render_template("index.html")
+    msg = request.args.get("msg")
+    words = list(db.words.find({}, {"_id": False}))
+    return render_template("index.html", words=words, msg=msg)
 
 
 @app.route('/detail/<keyword>')
 def detail(keyword):
-    # API에서 단어 뜻 찾아서 결과 보내기
-    return render_template("detail.html", word=keyword)
+    status_receive = request.args.get("status_give")
+    r = requests.get(f"https://owlbot.info/api/v4/dictionary/{keyword}", headers={"Authorization": "Token 3365ca855481b93b1a1287c290d2b035da64c338"})
+    if r.status_code != 200:
+        return redirect(url_for("main", msg="단어가 사전에 없어요!"))
+    result = r.json()
+    print(result)
+    return render_template("detail.html", word=keyword, result=result, status=status_receive)
 
 
 @app.route('/api/save_word', methods=['POST'])
 def save_word():
     # 단어 저장하기
-    return jsonify({'result': 'success', 'msg': '단어 저장'})
+    word_receive = request.form["word_give"]
+    definition_receive = request.form["definition_give"]
+    doc = {"word": word_receive, "definition":definition_receive}
+    db.words.insert_one(doc)
+    return jsonify({'result': 'success', 'msg': f'단어 {word_receive} 저장'})
 
 
 @app.route('/api/delete_word', methods=['POST'])
 def delete_word():
     # 단어 삭제하기
-    return jsonify({'result': 'success', 'msg': '단어 삭제'})
+    word_receive = request.form["word_give"]
+    db.words.delete_one({"word": word_receive})
+    return jsonify({'result': 'success', 'msg': f'단어 {word_receive} 삭제'})
 
 
 if __name__ == '__main__':
