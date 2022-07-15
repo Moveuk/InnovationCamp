@@ -1,16 +1,21 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from pymongo import MongoClient
 
-
 app = Flask(__name__)
 
-client = MongoClient('mongodb+srv://cluster0.8qrmv.mongodb.net/?retryWrites=true&w=majority', 27017, username="test", password="test1234")
+client = MongoClient('mongodb+srv://cluster0.8qrmv.mongodb.net/?retryWrites=true&w=majority', 27017, username="test",
+                     password="test1234")
 db = client.dbsparta_plus_week3
 
 
 @app.route('/')
 def main():
     return render_template("index.html")
+
+
+@app.route('/map')
+def test_map():
+    return render_template("prac_map.html")
 
 
 if __name__ == '__main__':
