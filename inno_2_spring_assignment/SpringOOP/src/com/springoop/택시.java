@@ -11,6 +11,7 @@ public class 택시 extends 대중교통 {
     String 목적지 = "";
     int 목적지까지거리;
     int 기본요금 = 3000;
+    int 누적요금;
     int 거리당요금 = 1000;
     int 기본거리 = 1;
     String 상태 = "일반";
@@ -29,6 +30,11 @@ public class 택시 extends 대중교통 {
             return;
         }
         속도 += 속도변화량;
+    }
+
+    public void 상태_변경(int 주유변화량) {
+        주유량 = 주유변화량;
+        if (주유량 < 10) System.out.println("주유가 필요하다");
     }
 
     public void 상태_변경(int 주유변화량, String 변화상태값) {
@@ -52,7 +58,8 @@ public class 택시 extends 대중교통 {
     }
 
     public void 요금_결제() {
-        System.out.println(기본요금 + (목적지까지거리 - 1) * 거리당요금);
+        누적요금 = 기본요금 + (목적지까지거리 - 1) * 거리당요금;
+
     }
 
 }

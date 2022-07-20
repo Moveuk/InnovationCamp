@@ -12,7 +12,11 @@ public class 버스 extends 대중교통 {
     String 상태 = "운행";
 
     public void 운행(String 변화상태값) {
+        if (변화상태값.equals("차고지행")) {
+            현재승객수 = 0;
+        }
         this.상태 = 변화상태값;
+        System.out.println("상태 : "+상태);
     }
 
     public void 속도_변경(int 속도변화량) {
@@ -23,11 +27,17 @@ public class 버스 extends 대중교통 {
         속도 += 속도변화량;
     }
 
-    public void 상태_변경(int 주유변화량, String 변화상태값) {
-        주유량 = 주유변화량;
-        상태 = 변화상태값;
-        if (주유량 <= 0 || 상태 == "차고지행") 운행("차고지행");
-        if (주유량 < 10) System.out.println("주유가 필요하다");
+    public void 상태_변경(int 주유변화량) {
+        주유량 += 주유변화량;
+        if (주유량 < 10) {
+            System.out.println("주유량 : " + 주유량);
+            운행("차고지행");
+            System.out.println("주유가 필요하다");
+        }
+    }
+
+    public void 상태_변경(String 변화상태값) {
+        운행(변화상태값);
     }
 
     public void 승객_탑승(int 탑승승객수) {
