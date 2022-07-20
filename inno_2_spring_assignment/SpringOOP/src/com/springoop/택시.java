@@ -1,7 +1,9 @@
 package com.springoop;
 
+import java.util.UUID;
+
 public class 택시 extends 대중교통 {
-    int 번호;
+    UUID 번호 = UUID.randomUUID();
     int 주유량 = 100;
     int 속도;
     int 최대승객수 = 4;
@@ -12,10 +14,6 @@ public class 택시 extends 대중교통 {
     int 거리당요금 = 1000;
     int 기본거리 = 1;
     String 상태 = "일반";
-
-    public 택시(int 번호) {
-        this.번호 = 번호;
-    }
 
     public void 운행(String 변화상태값) {
         if (주유량 >= 10) {

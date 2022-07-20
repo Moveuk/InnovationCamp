@@ -1,7 +1,9 @@
 package com.springoop;
 
+import java.util.UUID;
+
 public class 버스 extends 대중교통 {
-    int 번호;
+    UUID 번호 = UUID.randomUUID();
     int 주유량 = 100;
     int 속도;
     int 최대승객수 = 30;
