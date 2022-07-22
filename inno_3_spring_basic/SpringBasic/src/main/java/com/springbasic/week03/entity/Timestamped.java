@@ -1,4 +1,4 @@
-package com.springbasic.week03.domain;
+package com.springbasic.week03.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
