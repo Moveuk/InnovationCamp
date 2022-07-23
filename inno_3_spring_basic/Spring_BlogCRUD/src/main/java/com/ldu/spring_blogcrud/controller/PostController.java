@@ -16,7 +16,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping(path = "/api/posts")
-    public List<PostRequestDto> getPosts() {
+    public List<Post> getPosts() {
         return postService.getPostsList();
     }
 

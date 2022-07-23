@@ -19,11 +19,9 @@ public class PostService {
     private final PostRepository postRepository;
 
     // 글 목록 리스트 받아오기
-    public List<PostRequestDto> getPostsList() {
+    public List<Post> getPostsList() {
         List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
-        List<PostRequestDto> postList = new ArrayList<>();
-        posts.stream().forEach(post -> postList.add(new PostRequestDto(post)));
-        return postList;
+        return posts;
     }
 
     // 글 조회
