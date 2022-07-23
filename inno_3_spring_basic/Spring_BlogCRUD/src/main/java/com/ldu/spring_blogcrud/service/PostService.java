@@ -4,7 +4,6 @@ import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

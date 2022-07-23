@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,7 +23,8 @@ public class PostController {
     }
 
     @PostMapping(path = "/api/posts")
-    public Long createPost(@RequestBody PostRequestDto postRequestDto) {
+    public Long createPost(@Valid @RequestBody PostRequestDto postRequestDto) {
+        System.out.println(postRequestDto.getId()==null);
         return postService.create(postRequestDto);
     }
 }
