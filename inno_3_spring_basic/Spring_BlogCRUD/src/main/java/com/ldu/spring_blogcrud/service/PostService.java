@@ -4,9 +4,11 @@ import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +20,8 @@ public class PostService {
 
     // 글 목록 리스트 받아오기
     public List<PostRequestDto> getPostsList() {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
         List<PostRequestDto> postList = new ArrayList<>();
-
-        if (1 == 1) {
-
-        }
         posts.stream().forEach(post -> postList.add(new PostRequestDto(post)));
         return postList;
     }
