@@ -1,6 +1,6 @@
-package com.springbasic.week03.controller;
+package com.springbasic.week02.controller;
 
-import com.springbasic.week03.model.Person;
+import com.springbasic.week02.model.Person;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

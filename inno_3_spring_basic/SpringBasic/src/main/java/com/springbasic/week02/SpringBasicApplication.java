@@ -1,17 +1,19 @@
-package com.springbasic.week03;
+package com.springbasic.week02;
 
-import com.springbasic.week03.domain.CourseRequestDto;
-import com.springbasic.week03.entity.Course;
-import com.springbasic.week03.repository.CourseRepository;
-import com.springbasic.week03.service.CourseService;
+import com.springbasic.week02.domain.CourseRequestDto;
+import com.springbasic.week02.entity.Course;
+import com.springbasic.week02.repository.CourseRepository;
+import com.springbasic.week02.service.CourseService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @EnableJpaAuditing
 @SpringBootApplication
 public class SpringBasicApplication {

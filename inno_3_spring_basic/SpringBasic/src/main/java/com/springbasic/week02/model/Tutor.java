@@ -1,4 +1,4 @@
-package com.springbasic.week03.model;
+package com.springbasic.week02.model;
 
 import lombok.Data;
 

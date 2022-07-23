@@ -1,4 +1,4 @@
-package com.springbasic.week03.domain;
+package com.springbasic.week02.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

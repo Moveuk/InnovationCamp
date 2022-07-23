@@ -1,8 +1,8 @@
-package com.springbasic.week03.service;
+package com.springbasic.week02.service;
 
-import com.springbasic.week03.domain.CourseRequestDto;
-import com.springbasic.week03.entity.Course;
-import com.springbasic.week03.repository.CourseRepository;
+import com.springbasic.week02.domain.CourseRequestDto;
+import com.springbasic.week02.entity.Course;
+import com.springbasic.week02.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

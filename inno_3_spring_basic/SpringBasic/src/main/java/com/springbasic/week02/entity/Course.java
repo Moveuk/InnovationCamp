@@ -1,6 +1,6 @@
-package com.springbasic.week03.entity;
+package com.springbasic.week02.entity;
 
-import com.springbasic.week03.domain.CourseRequestDto;
+import com.springbasic.week02.domain.CourseRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
