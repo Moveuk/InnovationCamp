@@ -1,6 +1,7 @@
 package com.ldu.spring_blogcrud.service;
 
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
+import com.ldu.spring_blogcrud.dto.PostResponseDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,11 @@ public class PostService {
     private final PostRepository postRepository;
 
     // 글 목록 리스트 받아오기
-    public List<Post> getPostsList() {
-        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
-        return posts;
+    public List<PostResponseDto> getPostsList() {
+        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC,"createdAt"));
+        List<PostResponseDto> postList = new ArrayList<>();
+        posts.stream().forEach(post -> postList.add(new PostResponseDto(post)));
+        return postList;
     }
 
     // 글 조회

@@ -1,6 +1,7 @@
 package com.ldu.spring_blogcrud.controller;
 
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
+import com.ldu.spring_blogcrud.dto.PostResponseDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping(path = "/api/posts")
-    public List<Post> getPosts() {
+    public List<PostResponseDto> getPosts() {
         return postService.getPostsList();
     }
 
