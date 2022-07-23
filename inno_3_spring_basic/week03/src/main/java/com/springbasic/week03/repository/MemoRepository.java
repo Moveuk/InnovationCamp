@@ -1,4 +1,10 @@
 package com.springbasic.week03.repository;
 
-public class MemoRepository {
+import com.springbasic.week03.entity.Memo;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface MemoRepository extends JpaRepository<Memo, Long> {
+    List<Memo> findAllByOrderByModifiedAtDesc();
 }
