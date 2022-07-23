@@ -3,21 +3,19 @@ package com.ldu.spring_blogcrud.service;
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class PostService {
 
-    private PostRepository postRepository;
-
-    @Autowired
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final PostRepository postRepository;
 
     // 글 목록 리스트 받아오기
     public List<PostRequestDto> getPostsList() {
@@ -28,9 +26,10 @@ public class PostService {
     }
 
     // 글 등록
-    public Post insertPost() {
-
-
-        return null;
+    @Transactional
+    public Long create(PostRequestDto postRequestDto) {
+        Post post = new Post(postRequestDto);
+        postRepository.save(post);
+        return post.getId();
     }
 }

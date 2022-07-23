@@ -4,7 +4,6 @@ import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -22,7 +21,7 @@ public class Post extends Timestamped {
     private String title;
 
     @Column(nullable = false)
-    private String username;
+    private String author;
 
     @Column(nullable = false)
     private String password;
@@ -30,20 +29,26 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-
-
     public Post(PostRequestDto postRequestDto) {
         this.id = postRequestDto.getId();
         this.title = postRequestDto.getTitle();
-        this.username = postRequestDto.getUsername();
+        this.author = postRequestDto.getAuthor();
         this.password = postRequestDto.getPassword();
         this.content = postRequestDto.getContent();
     }
 
     public Post(String title, String username, String password, String content) {
         this.title = title;
-        this.username = username;
+        this.author = username;
         this.password = password;
         this.content = content;
+    }
+
+    public void update(PostRequestDto postRequestDto) {
+        this.id = postRequestDto.getId();
+        this.title = postRequestDto.getTitle();
+        this.author = postRequestDto.getAuthor();
+        this.password = postRequestDto.getPassword();
+        this.content = postRequestDto.getContent();
     }
 }
