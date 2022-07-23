@@ -24,6 +24,12 @@ public class PostService {
         return postList;
     }
 
+    public Post getPost(Long id) {
+        return postRepository.findById(id).orElseThrow((() ->
+                new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        ));
+    }
+
     // 글 등록
     @Transactional
     public Long create(PostRequestDto postRequestDto) {
