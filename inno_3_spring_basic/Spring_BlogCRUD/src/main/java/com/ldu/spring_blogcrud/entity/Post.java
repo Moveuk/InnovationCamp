@@ -3,6 +3,7 @@ package com.ldu.spring_blogcrud.entity;
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -52,7 +53,6 @@ public class Post extends Timestamped {
     }
 
     public void update(PostRequestDto postRequestDto) {
-        this.id = postRequestDto.getId();
         this.title = postRequestDto.getTitle();
         this.author = postRequestDto.getAuthor();
         this.password = postRequestDto.getPassword();

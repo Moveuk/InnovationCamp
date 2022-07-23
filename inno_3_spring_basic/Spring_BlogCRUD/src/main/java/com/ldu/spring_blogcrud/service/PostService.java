@@ -20,10 +20,15 @@ public class PostService {
     public List<PostRequestDto> getPostsList() {
         List<Post> posts = postRepository.findAll();
         List<PostRequestDto> postList = new ArrayList<>();
+
+        if (1 == 1) {
+
+        }
         posts.stream().forEach(post -> postList.add(new PostRequestDto(post)));
         return postList;
     }
 
+    // 글 조회
     public Post getPost(Long id) {
         return postRepository.findById(id).orElseThrow((() ->
                 new IllegalArgumentException("아이디가 존재하지 않습니다.")
@@ -35,6 +40,15 @@ public class PostService {
     public Long create(PostRequestDto postRequestDto) {
         Post post = new Post(postRequestDto);
         postRepository.save(post);
+        return post.getId();
+    }
+
+    // 글 수정
+    @Transactional
+    public Long update(Long id, PostRequestDto postRequestDto) {
+        Post post = postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("아이디가 존재하지 않습니다."));
+        post.update(postRequestDto);
         return post.getId();
     }
 }
