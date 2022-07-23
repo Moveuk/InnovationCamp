@@ -28,7 +28,6 @@ public class PostController {
 
     @PostMapping(path = "/api/posts")
     public Long createPost(@Valid @RequestBody PostRequestDto postRequestDto) {
-        System.out.println(postRequestDto.getId() == null);
         return postService.create(postRequestDto);
     }
 
@@ -40,5 +39,10 @@ public class PostController {
     @DeleteMapping(path = "/api/posts/{id}")
     public Long deletePost(@PathVariable Long id) {
         return postService.delete(id);
+    }
+
+    @PostMapping(path = "/api/post/{id}/check")
+    public Boolean checkPostPassword(@PathVariable Long id,@RequestBody PostRequestDto postRequestDto) {
+        return postService.checkPassword(id,postRequestDto);
     }
 }

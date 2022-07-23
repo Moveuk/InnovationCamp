@@ -21,7 +21,7 @@ public class PostService {
 
     // 글 목록 리스트 받아오기
     public List<PostResponseDto> getPostsList() {
-        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC,"createdAt"));
+        List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         List<PostResponseDto> postList = new ArrayList<>();
         posts.stream().forEach(post -> postList.add(new PostResponseDto(post)));
         return postList;
@@ -30,7 +30,7 @@ public class PostService {
     // 글 조회
     public Post getPost(Long id) {
         return postRepository.findById(id).orElseThrow((() ->
-                new IllegalArgumentException("아이디가 존재하지 않습니다.")
+                new IllegalArgumentException("게시글이 존재하지 않습니다.")
         ));
     }
 
@@ -46,7 +46,7 @@ public class PostService {
     @Transactional
     public Long update(Long id, PostRequestDto postRequestDto) {
         Post post = postRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("아이디가 존재하지 않습니다."));
+                new IllegalArgumentException("게시글이 존재하지 않습니다."));
         post.update(postRequestDto);
         return post.getId();
     }
@@ -54,5 +54,10 @@ public class PostService {
     public Long delete(Long id) {
         postRepository.deleteById(id);
         return id;
+    }
+
+    public Boolean checkPassword(Long id, PostRequestDto postRequestDto) {
+        return postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("게시글이 존재하지 않습니다.")).getPassword().equals(postRequestDto.getPassword());
     }
 }
