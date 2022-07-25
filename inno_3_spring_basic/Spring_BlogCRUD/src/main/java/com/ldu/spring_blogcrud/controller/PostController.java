@@ -22,7 +22,7 @@ public class PostController {
     }
 
     @GetMapping(path = "/api/posts/{id}")
-    public Post getPost(@PathVariable Long id) {
+    public PostResponseDto getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 
