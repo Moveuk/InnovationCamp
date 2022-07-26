@@ -47,11 +47,10 @@ public class PostService {
     public Long update(Long id, PostRequestDto postRequestDto) {
         Post post = postRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("게시글이 존재하지 않습니다."));
-        if (post.getPassword().equals(postRequestDto.getPassword())) {
-            post.update(postRequestDto);
-        } else {
+        if (!post.getPassword().equals(postRequestDto.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 틀립니다.");
         }
+        post.update(postRequestDto);
         return post.getId();
     }
 
