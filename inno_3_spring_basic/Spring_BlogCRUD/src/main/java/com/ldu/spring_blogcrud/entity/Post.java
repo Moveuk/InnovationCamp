@@ -3,12 +3,10 @@ package com.ldu.spring_blogcrud.entity;
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -21,19 +19,19 @@ public class Post extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
-    @NotNull(message = "제목은 필수입니다.")
+    @NotBlank(message = "제목은 필수입니다.")
     private String title;
 
     @Column(nullable = false)
-    @NotNull(message = "글쓴이는 필수입니다.")
+    @NotBlank(message = "글쓴이는 필수입니다.")
     private String author;
 
     @Column(nullable = false)
-    @NotNull(message = "비밀번호는 필수입니다.")
+    @NotBlank(message = "비밀번호는 필수입니다.")
     private String password;
 
     @Column(nullable = false)
-    @NotNull(message = "내용은 필수입니다.")
+    @NotBlank(message = "내용은 필수입니다.")
     private String content;
 
     public Post(PostRequestDto postRequestDto) {

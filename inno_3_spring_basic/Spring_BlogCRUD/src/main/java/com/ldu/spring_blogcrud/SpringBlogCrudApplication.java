@@ -1,6 +1,5 @@
 package com.ldu.spring_blogcrud;
 
-import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.repository.PostRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -17,12 +16,13 @@ public class SpringBlogCrudApplication {
         SpringApplication.run(SpringBlogCrudApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner demo(PostRepository postRepository) {
-        return (args) -> {
-            for (int i = 0; i < 5; i++) {
-                postRepository.save(new Post("제목1", "아이디1", "1234", "컨텐츠"));
-            }
-        };
-    }
+//    @Bean
+//    public CommandLineRunner demo(PostRepository postRepository) {
+//        return (args) -> {
+//            for (int i = 0; i < 5; i++) {
+//                postRepository.save(new Post("제목1", "아이디1", "1234", "컨텐츠"));
+//                postRepository.save(new Post("제목2", "아이디2", "1234", "컨텐츠2"));
+//            }
+//        };
+//    }
 }

@@ -41,7 +41,7 @@ public class PostController {
         return postService.delete(id, postRequestDto);
     }
 
-    @PostMapping(path = "/api/post/{id}/check")
+    @PostMapping(path = "/api/post/{id}")
     public Boolean checkPostPassword(@PathVariable Long id,@RequestBody PostRequestDto postRequestDto) {
         return postService.checkPassword(id,postRequestDto);
     }
