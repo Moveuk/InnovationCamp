@@ -9,8 +9,6 @@ public enum ErrorCode {
 
     // 작은 프로젝트에서 에러코드가 따로 필요한가?
 
-
-
 /*  200 OK - 요청 성공
     201 Created - 요청에 따른 새로운 리소스 생성 성공
     204 No Content - 요청은 성공했지만 딱히 보내줄 내용이 없음
@@ -23,7 +21,7 @@ public enum ErrorCode {
 
     // 서버에러
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "C_001", "서버가 터졌습니다."),
-
+    NOT_FOUND(404,"c-002","PAGE NOT FOUND"),
     // 적절하지 않은 요청값.
     INVALID_INPUT_VALUE(400, "C_003", "적절하지 않은 요청 값입니다."),
 
@@ -32,7 +30,8 @@ public enum ErrorCode {
 
     // 비밀번호?!
     BAD_CHECK(400, "AU_001", "잘못된 패스워드입니다."),
-    POST_UNAUTHORIZED(403, "UC_002", "게시글을 수정할 수 있는 권한이 없습니다.");
+    POST_UNAUTHORIZED(403, "UC_001", "게시글을 수정할 수 있는 권한이 없습니다."),
+    DELETE_UNAUTHORIZED(403, "UC_002", "게시글을 삭제할 수 있는 권한이 없습니다.");
 
 
 
@@ -42,7 +41,7 @@ public enum ErrorCode {
 
     ErrorCode(int status, String code, String message) {
         this.status = status;
-        this.message = message;
         this.code = code;
+        this.message = message;
     }
 }

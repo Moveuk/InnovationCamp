@@ -10,12 +10,14 @@ public class ErrorResponseDto {
     // 작은 프로젝트에서 에러코드가 따로 필요한가?
 
     private int status;
+    private String code;
     private String message;
-    private String cod;
 
-    public ErrorResponseDto(int status, String message, String cod) {
-        this.status = status;
-        this.message = message;
-        this.cod = cod;
+    public ErrorResponseDto(ErrorCode errorCode) {
+        this.status = errorCode.getStatus();
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
     }
+
+
 }
