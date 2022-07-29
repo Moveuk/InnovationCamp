@@ -1,6 +1,7 @@
 package com.ldu.spring_blogcrud.entity;
 
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +36,6 @@ public class Post extends Timestamped {
     private String content;
 
     public Post(PostRequestDto postRequestDto) {
-        this.id = postRequestDto.getId();
         this.title = postRequestDto.getTitle();
         this.author = postRequestDto.getAuthor();
         this.password = postRequestDto.getPassword();
