@@ -12,23 +12,43 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleEntityNotFoundException(EntityNotFoundException ex){
-        log.error("handleEmailDuplicateException",ex);
+        log.error("handleEntityNotFoundException",ex);
         ErrorResponseDto response = new ErrorResponseDto(ex.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
     }
 
     @ExceptionHandler(PostUnauthorizedException.class)
     public ResponseEntity<ErrorResponseDto> handlePostUnauthorizedException(PostUnauthorizedException ex){
-        log.error("handleEmailDuplicateException",ex);
+        log.error("handlePostUnauthorizedException",ex);
         ErrorResponseDto response = new ErrorResponseDto(ex.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
     }
 
     @ExceptionHandler(DeleteUnauthorizedException.class)
     public ResponseEntity<ErrorResponseDto> handleDeleteUnauthorizedException(DeleteUnauthorizedException ex){
-        log.error("handleEmailDuplicateException",ex);
+        log.error("handleDeleteUnauthorizedException",ex);
         ErrorResponseDto response = new ErrorResponseDto(ex.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(NicknameDuplicatedException.class)
+    public ResponseEntity<ErrorResponseDto> nicknameDuplicatedException(NicknameDuplicatedException ex){
+        log.error("nicknameDuplicatedException",ex);
+        ErrorResponseDto response = new ErrorResponseDto(ex.getErrorCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(UserNotMatchRegexException.class)
+    public ResponseEntity<ErrorResponseDto> userNotMatchRegexException(UserNotMatchRegexException ex){
+        log.error("userNotMatchRegexException",ex);
+        ErrorResponseDto response = new ErrorResponseDto(ex.getErrorCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> commonIllegalArgumentException(IllegalArgumentException ex){
+        log.error("commonIllegalArgumentException",ex);
+        return new ResponseEntity<>(ex.getMessage() , HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

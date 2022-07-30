@@ -19,5 +19,7 @@ public class ErrorResponseDto {
         this.message = errorCode.getMessage();
     }
 
-
+    public ErrorResponseDto(String message) {
+        this.message = message;
+    }
 }
