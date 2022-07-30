@@ -19,7 +19,7 @@ spring:
     hibernate:
       format_sql: true
       show_sql: true
-#      ddl-auto: update
+#      ddl-auto: updagte
 
 
 server:
