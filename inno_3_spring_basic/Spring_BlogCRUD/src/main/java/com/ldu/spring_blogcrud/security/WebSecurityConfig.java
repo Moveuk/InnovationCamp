@@ -21,13 +21,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
         http.csrf()
-                .ignoringAntMatchers("/api/users/**");
+                .ignoringAntMatchers("/api/**");
         http
                 .authorizeHttpRequests((authz) ->
                         authz
                                 .antMatchers("/images/**").permitAll() // image 폴더를 login 없이 허용
                                 .antMatchers("/css/**").permitAll() // css 폴더를 login 없이 허용
-                                .antMatchers("/api/users/**").permitAll() // 회원 관리 처리 API 전부를 login 없이 허용
+                                .antMatchers("/api/**").permitAll() // 회원 관리 처리 API 전부를 login 없이 허용
                                 .anyRequest().authenticated()   // 어떤 요청이든 '인증'
                 )
                 // 로그인 기능 허용

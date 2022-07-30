@@ -29,8 +29,8 @@ public enum ErrorCode {
 
     // 회원 가입 과정
     NOT_MATCH_REGEX(403, "AU_001", "정규 표현식이 맞지 않습니다."),
-    BAD_CHECK(400, "AU_002", "잘못된 패스워드입니다."),
-    NICKNAME_DUPLICATED(400, "AU_003", "중복된 이름을 추가할 수 없습니다."),
+    NICKNAME_DUPLICATED(400, "AU_002", "중복된 이름을 추가할 수 없습니다."),
+    BAD_CHECK(400, "AU_003", "잘못된 패스워드입니다."),
 
     // 비밀번호?!
     POST_UNAUTHORIZED(403, "UC_001", "게시글을 수정할 수 있는 권한이 없습니다."),
