@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final UserDetailsService userDetailsService;
 
     @ApiResponses({
             @ApiResponse(code=200, message="회원가입 완료"),
@@ -24,9 +26,21 @@ public class UserController {
             @ApiResponse(code=403, message="중복된 이름 작성 금지"),
             @ApiResponse(code=500, message="서버 에러")
     })
-    @PostMapping(path = "/api/signup")
+    @PostMapping(path = "/signup")
     @ApiOperation(value = "회원가입", notes = "닉네임과 비밀번호를 입력하여 회원가입을 한다.")
     public void signup(@RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
     }
+
+//    @ApiResponses({
+//            @ApiResponse(code=200, message="로그인 완료"),
+//            @ApiResponse(code=400, message="닉네임 혹은 비밀번호 오류"),
+//            @ApiResponse(code=500, message="서버 에러")
+//    })
+//    @PostMapping(path = "/")
+//    @ApiOperation(value = "로그인", notes = "닉네임과 비밀번호를 입력하여 로그인을 한다.")
+//    public UserDetails signin(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        System.out.println("Controllerin");
+//        return userDetailsService.loadUserByUsername(userDetails.getUsername());
+//    }
 }

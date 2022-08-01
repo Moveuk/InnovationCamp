@@ -3,7 +3,6 @@ package com.ldu.spring_blogcrud.service;
 import com.ldu.spring_blogcrud.common.exceptions.ErrorCode;
 import com.ldu.spring_blogcrud.common.exceptions.NicknameDuplicatedException;
 import com.ldu.spring_blogcrud.common.exceptions.UserNotMatchRegexException;
-import com.ldu.spring_blogcrud.dto.SigninRequestDto;
 import com.ldu.spring_blogcrud.dto.SignupRequestDto;
 import com.ldu.spring_blogcrud.entity.User;
 import com.ldu.spring_blogcrud.repository.UserRepository;
@@ -39,17 +38,13 @@ public class UserService {
         //중복 체크
         Optional<User> found = userRepository.findByNickname(signupRequestDto.getNickname());
         if (found.isPresent()) {
-            throw new NicknameDuplicatedException("중복인 닉네임은 사용하실 수 없습니다.",ErrorCode.NICKNAME_DUPLICATED);
+            throw new NicknameDuplicatedException("중복인 닉네임은 사용하실 수 없습니다.", ErrorCode.NICKNAME_DUPLICATED);
         }
 
         //패스워드 인코드
         signupRequestDto.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
 
         userRepository.save(new User(signupRequestDto));
-    }
-
-    public void signin(SigninRequestDto signinRequestDto) {
-
     }
 
 }

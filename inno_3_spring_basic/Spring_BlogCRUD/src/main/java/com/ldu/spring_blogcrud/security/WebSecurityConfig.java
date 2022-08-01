@@ -19,27 +19,30 @@ public class WebSecurityConfig {
 
     @Bean // Security 추가 설정하도록 빈 생성
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // 회원 관리 처리 API (POST /user/**) 에 대해 CSRF 무시
+        // API (POST /api/**) 에 대해 CSRF 무시
         http.csrf()
-                .ignoringAntMatchers("/api/**");
+                .ignoringAntMatchers("/**");
         http
                 .authorizeHttpRequests((authz) ->
                         authz
                                 .antMatchers("/images/**").permitAll() // image 폴더를 login 없이 허용
                                 .antMatchers("/css/**").permitAll() // css 폴더를 login 없이 허용
-                                .antMatchers("/api/**").permitAll() // 회원 관리 처리 API 전부를 login 없이 허용
+                                .antMatchers("/signup").permitAll() // 회원가입 API 를 login 없이 허용
+                                .antMatchers("/signin").permitAll() // 로그인 API 를 login 없이 허용
                                 .anyRequest().authenticated()   // 어떤 요청이든 '인증'
                 )
-                // 로그인 기능 허용
-                .formLogin()
-                .loginPage("/user/login")
-                .defaultSuccessUrl("/")
-                .failureUrl("/user/login?error")
-                .permitAll()
+                    // 로그인 기능 허용
+                    .formLogin()
+//                    .loginPage("/user/login")
+                    .loginProcessingUrl("/signin")
+//                    .defaultSuccessUrl("/")
+//                    .failureUrl("/user/login?error")
+                    .permitAll()
                 .and()
                 //로그아웃 기능 허용
-                .logout()
-                .permitAll();
+                    .logout()
+                    .logoutUrl("/logout")
+                    .permitAll();
 
         return http.build();
     }
@@ -53,7 +56,7 @@ public class WebSecurityConfig {
                     .ignoring() // 진입 허용하도록 시큐리티 무시
                     .antMatchers(   // 다음 주소에 접근할 때
                             "/h2-console/**"
-                            , "/favicon.icd"
+                            , "/favicon.ico"
                     );
         };
     }
