@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.AuthenticationManager;
 
 @SpringBootTest
 class SpringBlogCrudApplicationTests {
@@ -20,6 +21,9 @@ class SpringBlogCrudApplicationTests {
                 System.out.println("bean : " + bean);
             }
         }
+
+        AuthenticationManager authenticationManager = applicationContext.getBean("AuthenticationManager", AuthenticationManager.class);
+        System.out.println("authenticationManager = " + authenticationManager.getClass().getName());
     }
 
 }
