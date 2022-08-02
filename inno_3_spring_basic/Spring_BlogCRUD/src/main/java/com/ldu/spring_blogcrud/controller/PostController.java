@@ -5,6 +5,7 @@ import com.ldu.spring_blogcrud.dto.PostResponseDto;
 import com.ldu.spring_blogcrud.service.PostService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -23,6 +24,7 @@ public class PostController {
             @ApiResponse(code=401, message="조회 권한 없음. 로그인 필요"),
             @ApiResponse(code=500, message="서버 에러")
     })
+//    @Secured("ROLE_ADMIN") // Role에 맞는 사람만 접근하도록 하는 어노테이션
     @GetMapping(path = "/api/posts")
     @ApiOperation(value = "전체 게시글 목록 조회", notes = "전체 게시글 목록을 조회한다.")
     public List<PostResponseDto> getPosts() {
