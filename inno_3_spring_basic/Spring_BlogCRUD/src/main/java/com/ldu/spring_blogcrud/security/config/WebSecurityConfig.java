@@ -1,17 +1,14 @@
-package com.ldu.spring_blogcrud.security;
+package com.ldu.spring_blogcrud.security.config;
 
-import com.ldu.spring_blogcrud.security.filter.FormLoginFilter;
-import com.ldu.spring_blogcrud.security.filter.JwtAuthFilter;
-import com.ldu.spring_blogcrud.security.jwt.JwtDecoder;
-import com.ldu.spring_blogcrud.security.provider.FormLoginAuthProvider;
-import com.ldu.spring_blogcrud.security.provider.JWTAuthProvider;
+import com.ldu.spring_blogcrud.global.config.redis.RedisService;
+import com.ldu.spring_blogcrud.security.AuthenticationSuccessHandlerImpl;
+import com.ldu.spring_blogcrud.security.filter.CustomAuthenticationFilter;
+import com.ldu.spring_blogcrud.security.filter.JwtFilter;
+import com.ldu.spring_blogcrud.security.provider.CustomAuthenticationProvider;
+import com.ldu.spring_blogcrud.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,9 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
 @RequiredArgsConstructor
@@ -33,9 +27,10 @@ import java.util.List;
 public class WebSecurityConfig {
 
     private final CorsFilter corsFilter;
-    private final JwtDecoder jwtDecoder;
-    private final JWTAuthProvider jwtAuthProvider;
+    private final JwtProvider jwtProvider;
+    private final RedisService redisService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final AuthenticationSuccessHandlerImpl authenticationSuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -53,11 +48,6 @@ public class WebSecurityConfig {
                             "/h2-console/**"
                     );
         };
-    }
-
-    @Bean
-    public JWTAuthProvider jwtAuthProvider() {
-        return new JWTAuthProvider(jwtDecoder);
     }
 
     @Bean // Security 추가 설정하도록 빈 생성
@@ -104,65 +94,20 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public FormLoginFilter formLoginFilter() throws Exception {
-        FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationConfiguration.getAuthenticationManager());
-        formLoginFilter.setFilterProcessesUrl("/signin");
-        formLoginFilter.setAuthenticationSuccessHandler(formLoginSuccessHandler());
-        formLoginFilter.afterPropertiesSet();
-        return formLoginFilter;
+    public CustomAuthenticationFilter formLoginFilter() throws Exception {
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationConfiguration.getAuthenticationManager());
+        customAuthenticationFilter.setFilterProcessesUrl("/signin");
+        customAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        // BeanFactory에 의해 모든 property가 설정되고 난 뒤 실행
+        customAuthenticationFilter.afterPropertiesSet();
+        return customAuthenticationFilter;
     }
 
+    /**
+     * JWT의 인증 및 권한을 확인하는 필터
+     */
     @Bean
-    public FormLoginSuccessHandler formLoginSuccessHandler() {
-        return new FormLoginSuccessHandler();
+    public JwtFilter jwtFilter() {
+        return new JwtFilter(jwtProvider, redisService);
     }
-
-    @Bean
-    public FormLoginAuthProvider formLoginAuthProvider() {
-        return new FormLoginAuthProvider(encodePassword());
-    }
-
-    private JwtAuthFilter jwtFilter() throws Exception {
-        List<String> skipPathList = new ArrayList<>();
-
-        // Static 정보 접근 허용
-        skipPathList.add("GET,/images/**");
-        skipPathList.add("GET,/css/**");
-
-        // h2-console 허용
-        skipPathList.add("GET,/h2-console/**");
-        skipPathList.add("POST,/h2-console/**");
-
-        // 회원 관리 API 허용
-        skipPathList.add("GET,/");
-        skipPathList.add("POST,/signup");
-        skipPathList.add("POST,/signin");
-
-        // 게시글 API 허용
-        skipPathList.add("GET,/api/posts");
-        skipPathList.add("GET,/api/posts/**");
-
-        // 댓글 API 허용
-        skipPathList.add("GET,/api/replys/**");
-
-        skipPathList.add("GET,/");
-        skipPathList.add("GET,/basic.js");
-
-        skipPathList.add("GET,/favicon.svg");
-
-        FilterSkipMatcher matcher = new FilterSkipMatcher(
-                skipPathList,
-                "/**"
-        );
-
-        JwtAuthFilter filter = new JwtAuthFilter(
-                matcher,
-                jwtDecoder
-        );
-        filter.setAuthenticationManager(authenticationConfiguration.getAuthenticationManager());
-
-        return filter;
-    }
-
-
 }

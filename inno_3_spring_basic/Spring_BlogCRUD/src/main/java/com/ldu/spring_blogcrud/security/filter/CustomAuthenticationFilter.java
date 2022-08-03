@@ -12,10 +12,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     final private ObjectMapper objectMapper;
 
-    public FormLoginFilter(final AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter(final AuthenticationManager authenticationManager) {
         super.setAuthenticationManager(authenticationManager);
         // 객체 만들어서 초기화
         objectMapper = new ObjectMapper()
@@ -41,7 +41,7 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         setDetails(request, authRequest);
         // username과 password가 담긴 객체를 들고 AuthenticationManager한테 인증 요청.
-        // -> formLoginProvider의 authenticate()으로 이동
+        // -> Provider의 authenticate()으로 이동
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 }

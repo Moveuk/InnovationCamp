@@ -8,16 +8,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-public class FormLoginAuthProvider implements AuthenticationProvider {
+@Component
+public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Resource(name="userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public FormLoginAuthProvider(BCryptPasswordEncoder passwordEncoder) {
+    public CustomAuthenticationProvider(BCryptPasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,7 +33,11 @@ public class FormLoginAuthProvider implements AuthenticationProvider {
 
         // UserDetailsService 를 통해 DB에서 username 으로 사용자 조회
         UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
-        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+
+        System.out.println("비밀번호 확인 전");
+        // 비밀번호 확인
+       if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            System.out.println("비밀번호 틀림");  // 안들어오는데?
             throw new BadCredentialsException(userDetails.getUsername() + "Invalid password");
         }
 

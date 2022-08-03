@@ -1,4 +1,4 @@
-package com.ldu.spring_blogcrud.security;
+package com.ldu.spring_blogcrud.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
