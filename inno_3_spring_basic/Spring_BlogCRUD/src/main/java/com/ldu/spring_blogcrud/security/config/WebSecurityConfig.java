@@ -4,7 +4,6 @@ import com.ldu.spring_blogcrud.global.config.redis.RedisService;
 import com.ldu.spring_blogcrud.security.AuthenticationSuccessHandlerImpl;
 import com.ldu.spring_blogcrud.security.filter.CustomAuthenticationFilter;
 import com.ldu.spring_blogcrud.security.filter.JwtFilter;
-import com.ldu.spring_blogcrud.security.provider.CustomAuthenticationProvider;
 import com.ldu.spring_blogcrud.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -72,7 +71,7 @@ public class WebSecurityConfig {
          * JwtFilter       : 서버에 접근시 JWT 확인 후 인증을 실시합니다.
          */
         http
-                .addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http
@@ -94,7 +93,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public CustomAuthenticationFilter formLoginFilter() throws Exception {
+    public CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationConfiguration.getAuthenticationManager());
         customAuthenticationFilter.setFilterProcessesUrl("/signin");
         customAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
