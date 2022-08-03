@@ -8,6 +8,7 @@ import com.ldu.spring_blogcrud.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -71,14 +72,12 @@ public class WebSecurityConfig {
          * JwtFilter       : 서버에 접근시 JWT 확인 후 인증을 실시합니다.
          */
         http
-                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        http
                 .authorizeHttpRequests((authz) ->
-                        authz.anyRequest().permitAll())
-//                .anyRequest().permitAll() // 어떤 요청이든 통과, JWT 필터로 관리할 것.
-//                .and()
+                        authz
+                                .antMatchers(HttpMethod.GET, new String[]{"/api/posts","/api/posts/**","/api/replys/**"}).permitAll()
+                                .antMatchers(HttpMethod.POST, new String[]{"/signup","/signin"}).permitAll()
+                                .anyRequest().authenticated()
+                )
                 //로그아웃 기능 허용
                 .logout()
                 // 로그아웃 요청 처리 URL
@@ -87,7 +86,10 @@ public class WebSecurityConfig {
                 .and()
                 .exceptionHandling()
                 // "접근 불가" 페이지 URL 설정
-                .accessDeniedPage("/forbidden.html");
+                .accessDeniedPage("/forbidden.html")
+                .and()
+                .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);;
 
         return http.build();
     }
