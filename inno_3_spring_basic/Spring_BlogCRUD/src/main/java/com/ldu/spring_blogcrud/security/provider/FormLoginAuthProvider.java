@@ -21,6 +21,7 @@ public class FormLoginAuthProvider implements AuthenticationProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // 로그인 인증 절차
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
@@ -34,9 +35,11 @@ public class FormLoginAuthProvider implements AuthenticationProvider {
             throw new BadCredentialsException(userDetails.getUsername() + "Invalid password");
         }
 
+        // 인증 성공하면 다음을 호출하고 결과적으로 FormLoginSuccessHandler를 찾아가게 됨.(onAuthenticationSuccess() 메소드로)
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
+    // supports 메서드의 authentication 객체가 우리가 filter에서 만든 UsernamePasswordAuthenticationToken객체를 같은지 비교하기 때문에 이 provider에서 처리 가능한지 알 수 있음.
     @Override
     public boolean supports(Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
