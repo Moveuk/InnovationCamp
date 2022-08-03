@@ -9,11 +9,11 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private final String username;
+    private final String nickname;
     private final String password;
 
-    public UserDetailsImpl(String username, String password) {
-        this.username = username;
+    public UserDetailsImpl(String nickname, String password) {
+        this.nickname = nickname;
         this.password = password;
     }
 
@@ -24,7 +24,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return nickname;
     }
 
     @Override

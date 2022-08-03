@@ -4,12 +4,18 @@ import com.ldu.spring_blogcrud.security.filter.FormLoginFilter;
 import com.ldu.spring_blogcrud.security.filter.JwtAuthFilter;
 import com.ldu.spring_blogcrud.security.jwt.JwtDecoder;
 import com.ldu.spring_blogcrud.security.provider.FormLoginAuthProvider;
+import com.ldu.spring_blogcrud.security.provider.JWTAuthProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,6 +34,7 @@ public class WebSecurityConfig {
 
     private final CorsFilter corsFilter;
     private final JwtDecoder jwtDecoder;
+    private final JWTAuthProvider jwtAuthProvider;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -35,11 +42,29 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // h2-console 접근 해제하기 위한 구성
+    // 파비콘 관련 요청은 Spring Security 로직 수행 해제
+    @Bean // Security 추가 설정하도록 빈 생성
+    public WebSecurityCustomizer WebSecurityCustomizer() throws Exception {
+        return (web) -> {
+            web
+                    .ignoring() // 진입 허용하도록 시큐리티 무시
+                    .antMatchers(   // 다음 주소에 접근할 때
+                            "/h2-console/**"
+                    );
+        };
+    }
+
+    @Bean
+    public JWTAuthProvider jwtAuthProvider() {
+        return new JWTAuthProvider(jwtDecoder);
+    }
+
     @Bean // Security 추가 설정하도록 빈 생성
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 모든 API 에 대해 CSRF 보안 기능 끔
         http.csrf().disable()
-                .headers().addHeaderWriter(new StaticHeadersWriter("X-Content-Security-Policy","script-src 'self'")).frameOptions().disable();
+                .headers().addHeaderWriter(new StaticHeadersWriter("X-Content-Security-Policy", "script-src 'self'")).frameOptions().disable();
 
         // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
         http
@@ -61,9 +86,10 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http
-                .authorizeHttpRequests()
-                .anyRequest().permitAll() // 어떤 요청이든 통과, JWT 필터로 관리할 것.
-                .and()
+                .authorizeHttpRequests((authz) ->
+                        authz.anyRequest().permitAll())
+//                .anyRequest().permitAll() // 어떤 요청이든 통과, JWT 필터로 관리할 것.
+//                .and()
                 //로그아웃 기능 허용
                 .logout()
                 // 로그아웃 요청 처리 URL
@@ -108,13 +134,21 @@ public class WebSecurityConfig {
         skipPathList.add("POST,/h2-console/**");
 
         // 회원 관리 API 허용
-        skipPathList.add("GET,/user/**");
+        skipPathList.add("GET,/");
         skipPathList.add("POST,/signup");
+        skipPathList.add("POST,/signin");
+
+        // 게시글 API 허용
+        skipPathList.add("GET,/api/posts");
+        skipPathList.add("GET,/api/posts/**");
+
+        // 댓글 API 허용
+        skipPathList.add("GET,/api/replys/**");
 
         skipPathList.add("GET,/");
         skipPathList.add("GET,/basic.js");
 
-        skipPathList.add("GET,/favicon.ico");
+        skipPathList.add("GET,/favicon.svg");
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
@@ -130,17 +164,5 @@ public class WebSecurityConfig {
         return filter;
     }
 
-//    // h2-console 접근 해제하기 위한 구성
-//    // 파비콘 관련 요청은 Spring Security 로직 수행 해제
-//    @Bean // Security 추가 설정하도록 빈 생성
-//    public WebSecurityCustomizer WebSecurityCustomizer() throws Exception {
-//        return (web) -> {
-//            web
-//                    .ignoring() // 진입 허용하도록 시큐리티 무시
-//                    .antMatchers(   // 다음 주소에 접근할 때
-//                            "/h2-console/**"
-//                            , "/favicon.ico"
-//                    );
-//        };
-//    }
+
 }

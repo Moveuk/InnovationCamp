@@ -11,9 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 
 public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
-    public static final String AUTH_HEADER = "Authorization";
-    public static final String TOKEN_TYPE = "BEARER";
-
     @Autowired
     private RedisService redisService;
 

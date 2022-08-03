@@ -30,11 +30,11 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
             JsonNode requestBody = objectMapper.readTree(request.getInputStream());
 
             // JSON으로 들어온 것은 reqeustBody에서 꺼내서 String 변수 저장
-            String username = requestBody.get("nickname").asText();
+            String nickname = requestBody.get("nickname").asText();
             String password = requestBody.get("password").asText();
 
             // 인증을 위한 토큰객체 생성해서 인증 request에 값 저장장
-            authRequest = new UsernamePasswordAuthenticationToken(username, password);
+            authRequest = new UsernamePasswordAuthenticationToken(nickname, password);
         } catch (Exception e) {
             throw new RuntimeException("username, password 입력이 필요합니다. (JSON)");
         }
