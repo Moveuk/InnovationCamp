@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FilterSkipMatcher implements RequestMatcher {
+    // http path 필터용 매처 설정.
 
     private final OrRequestMatcher orRequestMatcher;
     private final RequestMatcher   processingMatcher;

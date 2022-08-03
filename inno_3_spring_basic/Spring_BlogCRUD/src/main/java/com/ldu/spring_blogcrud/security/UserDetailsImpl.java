@@ -9,24 +9,22 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private final User user;
+    private final String username;
+    private final String password;
 
-    public UserDetailsImpl(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
+    public UserDetailsImpl(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getNickname();
+        return username;
     }
 
     @Override

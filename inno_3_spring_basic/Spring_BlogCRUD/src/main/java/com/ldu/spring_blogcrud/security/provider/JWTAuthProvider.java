@@ -1,5 +1,6 @@
 package com.ldu.spring_blogcrud.security.provider;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ldu.spring_blogcrud.entity.User;
 import com.ldu.spring_blogcrud.repository.UserRepository;
 import com.ldu.spring_blogcrud.security.UserDetailsImpl;
@@ -19,21 +20,16 @@ public class JWTAuthProvider implements AuthenticationProvider {
 
     private final JwtDecoder jwtDecoder;
 
-    private final UserRepository userRepository;
-
     @Override
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
         String token = (String) authentication.getPrincipal();
-        String username = jwtDecoder.decodeUsername(token);
+        DecodedJWT decodedJWT = jwtDecoder.decodeJWT(token);
+        String username = jwtDecoder.decodeUsername(decodedJWT);
+        String password = jwtDecoder.decodePassword(decodedJWT);
 
-        // TODO: API 사용시마다 매번 User DB 조회 필요
-        //  -> 해결을 위해서는 UserDetailsImpl 에 User 객체를 저장하지 않도록 수정
-        //  ex) UserDetailsImpl 에 userId, username, role 만 저장
-        //    -> JWT 에 userId, username, role 정보를 암호화/복호화하여 사용
-        User user = userRepository.findByNickname(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Can't find " + username));;
-        UserDetailsImpl userDetails = new UserDetailsImpl(user);
+        // 조회 쿼리 날리기 위해서 각각 token에서 username password 받아옴.
+        UserDetailsImpl userDetails = new UserDetailsImpl(username, password);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 

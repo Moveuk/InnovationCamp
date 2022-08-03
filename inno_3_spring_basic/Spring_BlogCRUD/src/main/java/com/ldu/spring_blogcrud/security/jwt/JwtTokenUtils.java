@@ -24,16 +24,18 @@ public final class JwtTokenUtils {
 
     public static final String CLAIM_EXPIRED_DATE = "EXPIRED_DATE";
     public static final String CLAIM_USER_NAME = "USER_NAME";
+    public static final String CLAIM_PASSWORD = "PASSWORD";
     public static final String JWT_SECRET = "jwt_secret_!@#$%";
 
-    public static String generateJwtToken(UserDetailsImpl userDetails) {
+    public static String generateJwtToken(String username, String password) {
         String token = null;
         try {
             token = JWT.create()
                     // 토큰 발급자
                     .withIssuer("ldu")
                     // 토큰 payload 작성, key - value 형식, 객체도 가능
-                    .withClaim(CLAIM_USER_NAME, userDetails.getUsername())
+                    .withClaim(CLAIM_USER_NAME, username)
+                    .withClaim(CLAIM_PASSWORD, password)
                      // 토큰 만료 일시 = 현재 시간 + 토큰 유효기간)
                     .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + JWT_TOKEN_VALID_MILLI_SEC))
                     .sign(generateAlgorithm());
@@ -44,7 +46,7 @@ public final class JwtTokenUtils {
         return token;
     }
 
-    public static String generateRefreshToken(UserDetailsImpl userDetails, String authToken) {
+    public static String generateRefreshToken() {
         String token = null;
         try {
             token = JWT.create()

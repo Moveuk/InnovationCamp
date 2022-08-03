@@ -2,16 +2,14 @@ package com.ldu.spring_blogcrud.security;
 
 import com.ldu.spring_blogcrud.security.filter.FormLoginFilter;
 import com.ldu.spring_blogcrud.security.filter.JwtAuthFilter;
-import com.ldu.spring_blogcrud.security.jwt.HeaderTokenExtractor;
+import com.ldu.spring_blogcrud.security.jwt.JwtDecoder;
 import com.ldu.spring_blogcrud.security.provider.FormLoginAuthProvider;
-import com.ldu.spring_blogcrud.security.provider.JWTAuthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,9 +27,7 @@ import java.util.List;
 public class WebSecurityConfig {
 
     private final CorsFilter corsFilter;
-    private final JWTAuthProvider jwtAuthProvider;
-    private final HeaderTokenExtractor headerTokenExtractor;
-//    private final AuthenticationManager authenticationManager;
+    private final JwtDecoder jwtDecoder;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -65,24 +61,10 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http
-                .authorizeHttpRequests((authz) ->
-                        authz
-                                .antMatchers("/images/**").permitAll() // image 폴더를 login 없이 허용
-                                .antMatchers("/css/**").permitAll() // css 폴더를 login 없이 허용
-                                .antMatchers("/signup").permitAll() // 회원가입 API 를 login 없이 허용
-                                .antMatchers("/signin").permitAll() // 로그인 API 를 login 없이 허용
-                                .antMatchers("/h2-console/*").permitAll() // 로그인 API 를 login 없이 허용
-                                .anyRequest().authenticated()   // 어떤 요청이든 '인증'
-                )
-                // 로그인 기능 허용
-//                .formLogin()
-//                    .loginPage("/user/login")
-//                .loginProcessingUrl("/signin")
-//                    .defaultSuccessUrl("/")
-//                    .failureUrl("/user/login?error")
-//                .permitAll()
-//                .and()
-                        //로그아웃 기능 허용
+                .authorizeHttpRequests()
+                .anyRequest().permitAll() // 어떤 요청이든 통과, JWT 필터로 관리할 것.
+                .and()
+                //로그아웃 기능 허용
                 .logout()
                 // 로그아웃 요청 처리 URL
                 .logoutUrl("/logout")
@@ -141,7 +123,7 @@ public class WebSecurityConfig {
 
         JwtAuthFilter filter = new JwtAuthFilter(
                 matcher,
-                headerTokenExtractor
+                jwtDecoder
         );
         filter.setAuthenticationManager(authenticationConfiguration.getAuthenticationManager());
 

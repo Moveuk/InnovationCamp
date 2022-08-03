@@ -24,8 +24,8 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
         final UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         // Token 생성 - 라이브러리 이용.
         // userDetails 가지고 header.payload.signature 생성.
-        final String authToken = JwtTokenUtils.generateJwtToken(userDetails);
-        final String refreshToken = JwtTokenUtils.generateRefreshToken(userDetails, authToken);
+        final String authToken = JwtTokenUtils.generateJwtToken(userDetails.getUsername(), userDetails.getPassword());
+        final String refreshToken = JwtTokenUtils.generateRefreshToken();
 
         // redis 저장 - key: username, value: refreshToken, duration: 일주일
         redisService.setValues(userDetails.getUsername(), refreshToken, Duration.ofDays(7));

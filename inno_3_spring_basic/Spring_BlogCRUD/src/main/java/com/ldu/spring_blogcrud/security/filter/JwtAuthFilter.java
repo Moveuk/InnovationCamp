@@ -1,7 +1,12 @@
 package com.ldu.spring_blogcrud.security.filter;
 
-import com.ldu.spring_blogcrud.security.jwt.HeaderTokenExtractor;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ldu.spring_blogcrud.common.exceptions.ExpiredTokenException;
+import com.ldu.spring_blogcrud.global.config.redis.RedisService;
+import com.ldu.spring_blogcrud.security.jwt.JwtDecoder;
 import com.ldu.spring_blogcrud.security.jwt.JwtPreProcessingToken;
+import com.ldu.spring_blogcrud.security.jwt.JwtTokenUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
@@ -14,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
@@ -21,15 +27,18 @@ import java.io.IOException;
  */
 public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
-    private final HeaderTokenExtractor extractor;
+    private final JwtDecoder jwtDecoder;
+
+    @Autowired
+    private RedisService redisService;
 
     public JwtAuthFilter(
             RequestMatcher requiresAuthenticationRequestMatcher,
-            HeaderTokenExtractor extractor
+            JwtDecoder jwtDecoder
     ) {
         super(requiresAuthenticationRequestMatcher);
 
-        this.extractor = extractor;
+        this.jwtDecoder = jwtDecoder;
     }
 
     @Override
@@ -39,14 +48,40 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
     ) throws AuthenticationException, IOException {
 
         // JWT 값을 담아주는 변수 TokenPayload
-        String tokenPayload = request.getHeader("Authorization");
-        if (tokenPayload == null) {
+        String accessTokenPayload = request.getHeader("Access-Token");
+        String refreshTokenPayload = request.getHeader("Refresh-Token");
+        String username = "";
+        String password = "";
+        DecodedJWT decodedJWT = null;
+
+        // accessToken, refreshTokenPayload 없으면 로그인 하도록 처리
+        if (accessTokenPayload == null || refreshTokenPayload == null) {
             response.sendRedirect("/user/loginView");
             return null;
         }
 
-        JwtPreProcessingToken jwtToken = new JwtPreProcessingToken(
-                extractor.extract(tokenPayload, request));
+        // accessToken이 있으나 유효하지 않은 경우 redis에 username으로 조회해서
+        // refreshTokenPayload가 redis value와 같은지 체크
+        try {
+            decodedJWT = jwtDecoder.decodeJWT(accessTokenPayload);// 디코드함. 토큰이 정상적인지 내부에서 검사함.
+            jwtDecoder.isExpired(decodedJWT); // 유효기간 체크
+        } catch (ExpiredTokenException e) { // 유효기간 지남. redis에서 꺼내서 비교
+            username = jwtDecoder.decodeUsername(decodedJWT);
+            password = jwtDecoder.decodePassword(decodedJWT);
+            String redisToken = redisService.getValues(username);
+            if (redisToken.equals(refreshTokenPayload)) { // refresh 토큰이 같으면 두 토큰 모두 갱신
+                accessTokenPayload = JwtTokenUtils.generateJwtToken(username, password);
+                refreshTokenPayload = JwtTokenUtils.generateRefreshToken();
+
+                // redis 저장 - key: username, value: refreshToken, duration: 일주일
+                redisService.setValues(username, refreshTokenPayload, Duration.ofDays(7));
+            } else { // refreshToken이 다르면
+                throw new IllegalArgumentException("잘못된 refreshToken을 입력하셨습니다.");
+            }
+        }
+
+        // AuthenticationToken 객체 생성해서 전달.
+        JwtPreProcessingToken jwtToken = new JwtPreProcessingToken(accessTokenPayload);
 
         return super
                 .getAuthenticationManager()
