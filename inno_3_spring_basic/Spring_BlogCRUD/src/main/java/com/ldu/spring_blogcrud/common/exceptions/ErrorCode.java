@@ -35,7 +35,8 @@ public enum ErrorCode {
 
     // 비밀번호?!
     POST_UNAUTHORIZED(403, "UC_001", "게시글을 수정할 수 있는 권한이 없습니다."),
-    DELETE_UNAUTHORIZED(403, "UC_002", "게시글을 삭제할 수 있는 권한이 없습니다.");
+    PUT_UNAUTHORIZED(403, "UC_002", "게시글을 삭제할 수 있는 권한이 없습니다."),
+    DELETE_UNAUTHORIZED(403, "UC_003", "게시글을 삭제할 수 있는 권한이 없습니다.");
 
     private final int status;
     private final String code;

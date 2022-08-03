@@ -2,10 +2,12 @@ package com.ldu.spring_blogcrud.controller;
 
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.dto.PostResponseDto;
+import com.ldu.spring_blogcrud.security.UserDetailsImpl;
 import com.ldu.spring_blogcrud.service.PostService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -48,7 +50,8 @@ public class PostController {
     })
     @PostMapping(path = "/api/posts")
     @ApiOperation(value = "게시글 작성", notes = "게시글을 작성한다.")
-    public Long createPost(@Valid @RequestBody PostRequestDto postRequestDto) {
+    public Long createPost(@Valid @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postRequestDto.setAuthor(userDetails.getUsername());
         return postService.create(postRequestDto);
     }
 
@@ -60,8 +63,8 @@ public class PostController {
     @PutMapping(path = "/api/posts/{id}")
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
     @ApiImplicitParam(name = "id", value = "Post Entity Id값")
-    public Long updatePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto) {
-        return postService.update(id, postRequestDto);
+    public Long updatePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.update(id, postRequestDto, userDetails);
     }
 
     @ApiResponses({
@@ -72,8 +75,8 @@ public class PostController {
     @DeleteMapping(path = "/api/posts/{id}")
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다.")
     @ApiImplicitParam(name = "id", value = "Post Entity Id값")
-    public Long deletePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto) {
-        return postService.delete(id, postRequestDto);
+    public Long deletePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.delete(id, postRequestDto, userDetails);
     }
 
     @ApiResponses({

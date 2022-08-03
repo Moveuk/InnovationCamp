@@ -5,6 +5,7 @@ import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.dto.PostResponseDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.repository.PostRepository;
+import com.ldu.spring_blogcrud.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -44,24 +45,29 @@ public class PostService {
 
     // 글 수정
     @Transactional
-    public Long update(Long id, PostRequestDto postRequestDto) {
+    public Long update(Long id, PostRequestDto postRequestDto, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("게시글이 존재하지 않습니다.", ErrorCode.ENTITY_NOT_FOUND));
         if (!post.getPassword().equals(postRequestDto.getPassword())) {
             throw new PostUnauthorizedException("비밀번호가 틀립니다.",ErrorCode.POST_UNAUTHORIZED);
         }
+        if (!userDetails.getUsername().equals(post.getAuthor())) { // 로그인한사람이랑 작성자가 다르면 exception
+            throw new PostUnauthorizedException("작성자만 수정할 수 있습니다.", ErrorCode.POST_UNAUTHORIZED);
+        }
         post.update(postRequestDto);
         return post.getId();
     }
 
-    public Long delete(Long id, PostRequestDto postRequestDto) {
+    public Long delete(Long id, PostRequestDto postRequestDto, UserDetailsImpl userDetails) {
         Post post = postRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("게시글이 존재하지 않습니다.", ErrorCode.ENTITY_NOT_FOUND));
-        if (post.getPassword().equals(postRequestDto.getPassword())) {
-            postRepository.deleteById(id);
-        } else {
+        if (!post.getPassword().equals(postRequestDto.getPassword())) {  // 비밀번호가 다르면 exception
             throw new DeleteUnauthorizedException("비밀번호가 틀립니다.",ErrorCode.DELETE_UNAUTHORIZED);
         }
+        if (!userDetails.getUsername().equals(post.getAuthor())) { // 로그인한사람이랑 작성자가 다르면 exception
+            throw new DeleteUnauthorizedException("작성자만 삭제할 수 있습니다.", ErrorCode.DELETE_UNAUTHORIZED);
+        }
+        postRepository.deleteById(id);
         return id;
     }
 

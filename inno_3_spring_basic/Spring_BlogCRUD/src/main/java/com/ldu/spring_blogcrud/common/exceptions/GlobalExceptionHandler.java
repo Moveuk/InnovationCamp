@@ -24,6 +24,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
     }
 
+    @ExceptionHandler(PutUnauthorizedException.class)
+    public ResponseEntity<ErrorResponseDto> handlePutUnauthorizedException(PutUnauthorizedException ex){
+        log.error("handlePostUnauthorizedException",ex);
+        ErrorResponseDto response = new ErrorResponseDto(ex.getErrorCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getErrorCode().getStatus()));
+    }
+
     @ExceptionHandler(DeleteUnauthorizedException.class)
     public ResponseEntity<ErrorResponseDto> handleDeleteUnauthorizedException(DeleteUnauthorizedException ex){
         log.error("handleDeleteUnauthorizedException",ex);

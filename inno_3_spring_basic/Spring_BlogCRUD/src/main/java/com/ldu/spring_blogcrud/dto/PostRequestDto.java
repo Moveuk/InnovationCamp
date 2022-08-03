@@ -15,7 +15,7 @@ public class PostRequestDto {
 
     @ApiModelProperty(value = "글 제목", example = "글 제목입니다.",dataType = "String")
     private String title;
-    @ApiModelProperty(value = "글쓴이", example = "글쓴이입니다.",dataType = "String")
+//    @ApiModelProperty(value = "글쓴이", example = "글쓴이입니다.",dataType = "String")
     private String author;
     @ApiModelProperty(value = "비밀번호", example = "비밀번호입니다.",dataType = "String")
     private String password;
