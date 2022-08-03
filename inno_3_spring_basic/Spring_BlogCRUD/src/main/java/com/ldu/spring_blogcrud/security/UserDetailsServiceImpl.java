@@ -15,8 +15,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username = " + username);
-        System.out.println("조회 전");
         User user = userRepository.findByNickname(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Nickname을 찾을 수 없습니다."));
 
