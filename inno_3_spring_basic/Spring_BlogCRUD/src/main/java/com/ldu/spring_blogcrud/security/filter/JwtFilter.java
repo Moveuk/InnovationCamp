@@ -56,6 +56,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.addHeader("Access-Token", accessToken);
                 response.addHeader("Refresh-Token", refreshToken);
             }
+        } else if (!StringUtils.hasText(refreshToken) || jwtProvider.isValidToken(refreshToken)) { // 9번 요구사항
+            //Refresh Token을 전달하지 않거나 정상 토큰이 아닐 때는 "Token이 유효하지 않습니다." 라는 에러 메세지를 response에 포함하기
+            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
         }
         // 토큰이 없을때는 그냥 지나감.
 
