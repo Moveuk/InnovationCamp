@@ -1,7 +1,9 @@
 package com.ldu.spring_blogcrud.service;
 
-import com.google.common.collect.Lists;
-import com.ldu.spring_blogcrud.common.exceptions.*;
+import com.ldu.spring_blogcrud.common.exceptions.DeleteUnauthorizedException;
+import com.ldu.spring_blogcrud.common.exceptions.EntityNotFoundException;
+import com.ldu.spring_blogcrud.common.exceptions.ErrorCode;
+import com.ldu.spring_blogcrud.common.exceptions.PostUnauthorizedException;
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.dto.PostResponseDto;
 import com.ldu.spring_blogcrud.entity.Post;
@@ -57,7 +59,7 @@ public class PostService {
         if (!userDetails.getUsername().equals(post.getAuthor())) { // 로그인한사람이랑 작성자가 다르면 exception
             throw new PostUnauthorizedException("작성자만 수정할 수 있습니다.", ErrorCode.POST_UNAUTHORIZED);
         }
-        post.update(postRequestDto);
+        post.update(postRequestDto.getTitle(), postRequestDto.getContent());
         return post.getId();
     }
 
