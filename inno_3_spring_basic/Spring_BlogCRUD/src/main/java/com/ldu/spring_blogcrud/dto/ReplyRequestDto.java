@@ -20,8 +20,4 @@ public class ReplyRequestDto {
     @ApiModelProperty(value = "글 내용", example = "글 내용입니다.",dataType = "String")
     private String content;
 
-    public ReplyRequestDto(Reply reply) {
-        this.author = reply.getAuthor();
-        this.content = reply.getContent();
-    }
 }

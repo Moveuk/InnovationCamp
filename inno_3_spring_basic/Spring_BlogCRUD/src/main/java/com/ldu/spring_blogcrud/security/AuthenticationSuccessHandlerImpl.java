@@ -14,9 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 
 @Component
-@RequiredArgsConstructor
 public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthenticationSuccessHandler {
+    @Autowired
     private RedisService redisService;
+    @Autowired
     private JwtProvider jwtProvider;
 
     // 토큰에 대한 인증을 실행.

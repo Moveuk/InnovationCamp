@@ -3,6 +3,7 @@ package com.ldu.spring_blogcrud.controller;
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.dto.PostResponseDto;
 import com.ldu.spring_blogcrud.security.UserDetailsImpl;
+import com.ldu.spring_blogcrud.security.provider.JwtProvider;
 import com.ldu.spring_blogcrud.service.PostService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final JwtProvider jwtProvider;
 
     @ApiResponses({
             @ApiResponse(code=200, message="글목록 조회 완료"),
@@ -52,9 +54,9 @@ public class PostController {
     @PostMapping(path = "/api/posts")
     @ApiOperation(value = "게시글 작성", notes = "게시글을 작성한다.")
     public Long createPost(@Valid @RequestBody PostRequestDto postRequestDto, HttpServletRequest request) {
-//        request.getHeader("Access-Token");
-//        System.out.println("userDetails = " + userDetails.getUsername());
-//        postRequestDto.setAuthor(userDetails.getUsername());
+        String accesstoken = request.getHeader("Access-Token");
+        UserDetailsImpl userDetails = (UserDetailsImpl) jwtProvider.getAuthentication(accesstoken).getPrincipal();
+        postRequestDto.setAuthor(userDetails.getUsername());
         return postService.create(postRequestDto);
     }
 
@@ -66,7 +68,10 @@ public class PostController {
     @PutMapping(path = "/api/posts/{id}")
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
     @ApiImplicitParam(name = "id", value = "Post Entity Id값")
-    public Long updatePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Long updatePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto, HttpServletRequest request) {
+        String accesstoken = request.getHeader("Access-Token");
+        UserDetailsImpl userDetails = (UserDetailsImpl) jwtProvider.getAuthentication(accesstoken).getPrincipal();
+        System.out.println("userDetails.getUsername() = " + userDetails.getUsername());
         return postService.update(id, postRequestDto, userDetails);
     }
 
@@ -78,7 +83,9 @@ public class PostController {
     @DeleteMapping(path = "/api/posts/{id}")
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다.")
     @ApiImplicitParam(name = "id", value = "Post Entity Id값")
-    public Long deletePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Long deletePost(@PathVariable Long id, @RequestBody @ApiIgnore PostRequestDto postRequestDto, HttpServletRequest request) {
+        String accesstoken = request.getHeader("Access-Token");
+        UserDetailsImpl userDetails = (UserDetailsImpl) jwtProvider.getAuthentication(accesstoken).getPrincipal();
         return postService.delete(id, postRequestDto, userDetails);
     }
 

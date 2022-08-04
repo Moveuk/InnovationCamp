@@ -27,7 +27,7 @@ public class SpringBlogCrudApplication {
                 postRepository.save(new Post("제목"+(i+1), "tester"+(i+1), "1234", "컨텐츠"+(i+1)));
             }
             for (int i = 0; i < 3; i++) {
-                userRepository.save(new User("tester"+(i+1), "1234"));
+                userRepository.save(new User("tester"+(i+1), "$2a$10$MdJ.l1OfONuzbi2mzi4STuK4ojCw1748TdZgZqb5Q7f4oqfAeH3MG"));
             }
 //            for (int i = 0; i < 3; i++) {
 //                replyRepository.save(new Reply(2L,"tester"+(i+1), "댓글입니다."));

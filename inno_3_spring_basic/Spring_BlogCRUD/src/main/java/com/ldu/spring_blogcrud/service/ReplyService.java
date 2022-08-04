@@ -34,6 +34,7 @@ public class ReplyService {
     @Transactional
     public Long create(ReplyRequestDto replyRequestDto) {
         Reply reply = new Reply(replyRequestDto);
+        System.out.println("reply.getPostId() = " + reply.getPostId());
         replyRepository.save(reply);
         return reply.getId();
     }
@@ -50,7 +51,7 @@ public class ReplyService {
         return reply.getId();
     }
 
-    public Long delete(Long id, ReplyRequestDto replyRequestDto, UserDetailsImpl userDetails) {
+    public Long delete(Long id, UserDetailsImpl userDetails) {
         Reply reply = replyRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("댓글이 존재하지 않습니다.", ErrorCode.ENTITY_NOT_FOUND));
         if (!userDetails.getUsername().equals(reply.getAuthor())) { // 로그인한사람이랑 작성자가 다르면 exception

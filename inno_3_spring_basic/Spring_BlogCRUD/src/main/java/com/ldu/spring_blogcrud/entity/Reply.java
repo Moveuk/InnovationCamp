@@ -20,7 +20,7 @@ public class Reply extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "postID는 필수입니다.")
+//    @NotBlank(message = "postID는 필수입니다.")
     private Long postId;
 
     @Column(nullable = false)
@@ -39,7 +39,6 @@ public class Reply extends Timestamped {
     }
 
     public void update(ReplyRequestDto replyRequestDto) {
-        this.author = replyRequestDto.getAuthor();
         this.content = replyRequestDto.getContent();
     }
 
