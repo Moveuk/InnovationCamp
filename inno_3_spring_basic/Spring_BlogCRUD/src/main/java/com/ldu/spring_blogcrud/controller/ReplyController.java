@@ -49,7 +49,6 @@ public class ReplyController {
         UserDetailsImpl userDetails = (UserDetailsImpl) jwtProvider.getAuthentication(accesstoken).getPrincipal();
         replyRequestDto.setPostId(postId);
         replyRequestDto.setAuthor(userDetails.getUsername());
-        System.out.println("replyRequestDto.getPostId() = " + replyRequestDto.getPostId());
         return replyService.create(replyRequestDto);
     }
 

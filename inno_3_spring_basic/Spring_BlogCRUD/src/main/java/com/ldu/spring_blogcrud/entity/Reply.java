@@ -31,15 +31,8 @@ public class Reply extends Timestamped {
     @NotBlank(message = "댓글 내용은 필수입니다.")
     private String content;
 
-    public Reply(ReplyRequestDto replyRequestDto) {
-        super();
-        this.postId = replyRequestDto.getPostId();
-        this.author = replyRequestDto.getAuthor();
-        this.content = replyRequestDto.getContent();
-    }
-
-    public void update(ReplyRequestDto replyRequestDto) {
-        this.content = replyRequestDto.getContent();
+    public void update(String content) {
+        this.content = content;
     }
 
     public Reply(Long postId, String author, String content) {

@@ -1,6 +1,5 @@
 package com.ldu.spring_blogcrud.entity;
 
-import com.ldu.spring_blogcrud.dto.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,11 +24,6 @@ public class User extends Timestamped {
     @Column(nullable = false)
     @NotBlank(message = "회원 비밀번호는 공백일 수 없습니다.")
     private String password;
-
-    public User(SignupRequestDto signupRequestDto) {
-        this.nickname = signupRequestDto.getNickname();
-        this.password = signupRequestDto.getPassword();
-    }
 
     public User(String nickname, String password) {
         this.nickname = nickname;

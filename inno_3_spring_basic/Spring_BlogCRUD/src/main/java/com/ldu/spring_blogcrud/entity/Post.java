@@ -35,14 +35,6 @@ public class Post extends Timestamped {
     @NotBlank(message = "내용은 필수입니다.")
     private String content;
 
-    public Post(PostRequestDto postRequestDto) {
-        this.title = postRequestDto.getTitle();
-        this.author = postRequestDto.getAuthor();
-        this.password = postRequestDto.getPassword();
-        this.content = postRequestDto.getContent();
-    }
-
-    // test용
     public Post(String title, String username, String password, String content) {
         this.title = title;
         this.author = username;

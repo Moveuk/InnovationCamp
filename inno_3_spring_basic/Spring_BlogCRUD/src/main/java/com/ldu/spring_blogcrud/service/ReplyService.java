@@ -33,7 +33,7 @@ public class ReplyService {
     // 글 등록
     @Transactional
     public Long create(ReplyRequestDto replyRequestDto) {
-        Reply reply = new Reply(replyRequestDto);
+        Reply reply = new Reply(replyRequestDto.getPostId(),replyRequestDto.getAuthor(),replyRequestDto.getContent());
         System.out.println("reply.getPostId() = " + reply.getPostId());
         replyRepository.save(reply);
         return reply.getId();
@@ -47,7 +47,7 @@ public class ReplyService {
         if (!userDetails.getUsername().equals(reply.getAuthor())) { // 로그인한사람이랑 작성자가 다르면 exception
             throw new PostUnauthorizedException("작성자만 수정할 수 있습니다.", ErrorCode.POST_UNAUTHORIZED);
         }
-        reply.update(replyRequestDto);
+        reply.update(replyRequestDto.getContent());
         return reply.getId();
     }
 

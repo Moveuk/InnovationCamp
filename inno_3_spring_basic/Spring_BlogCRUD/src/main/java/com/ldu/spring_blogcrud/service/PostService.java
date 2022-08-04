@@ -41,7 +41,7 @@ public class PostService {
     // 글 등록
     @Transactional
     public Long create(PostRequestDto postRequestDto) {
-        Post post = new Post(postRequestDto);
+        Post post = new Post(postRequestDto.getTitle(), postRequestDto.getAuthor(), postRequestDto.getPassword(), postRequestDto.getContent());
         postRepository.save(post);
         return post.getId();
     }
@@ -52,7 +52,7 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("게시글이 존재하지 않습니다.", ErrorCode.ENTITY_NOT_FOUND));
         if (!post.getPassword().equals(postRequestDto.getPassword())) {
-            throw new PostUnauthorizedException("비밀번호가 틀립니다.",ErrorCode.POST_UNAUTHORIZED);
+            throw new PostUnauthorizedException("비밀번호가 틀립니다.", ErrorCode.POST_UNAUTHORIZED);
         }
         if (!userDetails.getUsername().equals(post.getAuthor())) { // 로그인한사람이랑 작성자가 다르면 exception
             throw new PostUnauthorizedException("작성자만 수정할 수 있습니다.", ErrorCode.POST_UNAUTHORIZED);
@@ -65,7 +65,7 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("게시글이 존재하지 않습니다.", ErrorCode.ENTITY_NOT_FOUND));
         if (!post.getPassword().equals(postRequestDto.getPassword())) {  // 비밀번호가 다르면 exception
-            throw new DeleteUnauthorizedException("비밀번호가 틀립니다.",ErrorCode.DELETE_UNAUTHORIZED);
+            throw new DeleteUnauthorizedException("비밀번호가 틀립니다.", ErrorCode.DELETE_UNAUTHORIZED);
         }
         if (!userDetails.getUsername().equals(post.getAuthor())) { // 로그인한사람이랑 작성자가 다르면 exception
             throw new DeleteUnauthorizedException("작성자만 삭제할 수 있습니다.", ErrorCode.DELETE_UNAUTHORIZED);

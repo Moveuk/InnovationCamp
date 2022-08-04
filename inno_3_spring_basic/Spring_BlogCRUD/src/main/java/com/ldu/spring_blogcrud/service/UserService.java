@@ -44,7 +44,7 @@ public class UserService {
         //패스워드 인코드
         signupRequestDto.setPassword(passwordEncoder.encode(signupRequestDto.getPassword()));
 
-        userRepository.save(new User(signupRequestDto));
+        userRepository.save(new User(signupRequestDto.getNickname(), signupRequestDto.getPassword()));
     }
 
 }
