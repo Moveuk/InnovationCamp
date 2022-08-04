@@ -1,10 +1,12 @@
 package com.ldu.spring_blogcrud.service;
 
+import com.google.common.collect.Lists;
 import com.ldu.spring_blogcrud.common.exceptions.*;
 import com.ldu.spring_blogcrud.dto.PostRequestDto;
 import com.ldu.spring_blogcrud.dto.PostResponseDto;
 import com.ldu.spring_blogcrud.entity.Post;
 import com.ldu.spring_blogcrud.repository.PostRepository;
+import com.ldu.spring_blogcrud.repository.ReplyRepository;
 import com.ldu.spring_blogcrud.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -19,6 +21,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ReplyRepository replyRepository;
 
     // 글 목록 리스트 받아오기
     public List<PostResponseDto> getPostsList() {
@@ -68,6 +71,7 @@ public class PostService {
             throw new DeleteUnauthorizedException("작성자만 삭제할 수 있습니다.", ErrorCode.DELETE_UNAUTHORIZED);
         }
         postRepository.deleteById(id);
+        replyRepository.deleteAll(replyRepository.findAllByPostId(id));
         return id;
     }
 
