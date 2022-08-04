@@ -18,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -60,7 +59,8 @@ public class WebSecurityConfig {
                 .antMatchers("**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/posts").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/reply/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/replies/**").permitAll()
+                .antMatchers("/api/replies/**").permitAll()
                 // 그 외 모든 요청은 인증과정 필요
                 .anyRequest().authenticated()
                 .and()

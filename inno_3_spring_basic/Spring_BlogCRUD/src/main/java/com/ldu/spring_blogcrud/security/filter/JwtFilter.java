@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
                             "/h2-console",
                             "/api/posts",
                             "/api/posts/**",
-                            "/api/replys",
+                            "/api/replies",
                             "/signup",
                             "/signin",
                             "/favicon.ico",

@@ -7,9 +7,11 @@ import com.ldu.spring_blogcrud.service.PostService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -49,9 +51,10 @@ public class PostController {
     })
     @PostMapping(path = "/api/posts")
     @ApiOperation(value = "게시글 작성", notes = "게시글을 작성한다.")
-    public Long createPost(@Valid @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        System.out.println("userDetails = " + userDetails.getUsername());
-        postRequestDto.setAuthor(userDetails.getUsername());
+    public Long createPost(@Valid @RequestBody PostRequestDto postRequestDto, HttpServletRequest request) {
+//        request.getHeader("Access-Token");
+//        System.out.println("userDetails = " + userDetails.getUsername());
+//        postRequestDto.setAuthor(userDetails.getUsername());
         return postService.create(postRequestDto);
     }
 
