@@ -36,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
                             "/signup",
                             "/signin",
                             "/favicon.ico",
+                            "/swagger-ui.html",
                             "/error"
                     ));
     /**
@@ -83,7 +84,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 //        return true; // 모두 다 걸러짐.
-        return EXCLUDE_URL.stream().anyMatch(url -> request.getServletPath().startsWith(url));
+        return EXCLUDE_URL.stream().anyMatch(url -> url.equalsIgnoreCase(request.getServletPath()));
     }
 /**
      * Request Header에서 토큰 추출
