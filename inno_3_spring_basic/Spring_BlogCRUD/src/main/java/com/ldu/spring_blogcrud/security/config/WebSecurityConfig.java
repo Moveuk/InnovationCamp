@@ -6,6 +6,7 @@ import com.ldu.spring_blogcrud.security.filter.CustomAuthenticationFilter;
 import com.ldu.spring_blogcrud.security.filter.JwtFilter;
 import com.ldu.spring_blogcrud.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,7 +22,7 @@ import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-@EnableWebSecurity // 스프링 Security 지원을 가능하게 함
+@EnableWebSecurity//(debug = true) // 스프링 Security 지원을 가능하게 함
 @RequiredArgsConstructor
 //@EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화를 위한 어노테이션
 public class WebSecurityConfig {
@@ -38,46 +39,31 @@ public class WebSecurityConfig {
     }
 
     // h2-console 접근 해제하기 위한 구성
-    // 파비콘 관련 요청은 Spring Security 로직 수행 해제
     @Bean // Security 추가 설정하도록 빈 생성
     public WebSecurityCustomizer WebSecurityCustomizer() throws Exception {
         return (web) -> {
+            web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
             web
                     .ignoring() // 진입 허용하도록 시큐리티 무시
-                    .antMatchers(   // 다음 주소에 접근할 때
-                            "/h2-console/**"
-                    );
+                    .antMatchers("/h2-console/**");   // 다음 주소에 접근할 때
         };
     }
 
     @Bean // Security 추가 설정하도록 빈 생성
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 모든 API 에 대해 CSRF 보안 기능 끔
-        http.csrf().disable()
-                .headers().addHeaderWriter(new StaticHeadersWriter("X-Content-Security-Policy", "script-src 'self'")).frameOptions().disable();
-
-        // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
-        http
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하면 stateful 처럼 사용하게 되는 것이고 그것을 session을 끔으로써 다시 stateless 하게 사용하도록 함.
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
+        http.authorizeRequests()
+                // api 요청 접근허용
+                .antMatchers("/user/**").permitAll()
+                .antMatchers("**").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/posts").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/reply/**").permitAll()
+                // 그 외 모든 요청은 인증과정 필요
+                .anyRequest().authenticated()
                 .and()
-                .addFilter(corsFilter) // 모든 요청이 CORS 정책에서 우회하도록 설정.
-                .formLogin().disable() // 로그인 폼 기능 끄기
-                .httpBasic().disable(); //Http basic Auth 기반의 로그인 인증창으로 로그인 기능을 끔.
-
-        /*
-         * 1.
-         * UsernamePasswordAuthenticationFilter 이전에 FormLoginFilter, JwtFilter 를 등록합니다.
-         * FormLoginFilter : 로그인 인증을 실시합니다.
-         * JwtFilter       : 서버에 접근시 JWT 확인 후 인증을 실시합니다.
-         */
-        http
-                .authorizeHttpRequests((authz) ->
-                        authz
-                                .antMatchers(HttpMethod.GET, new String[]{"/api/posts","/api/posts/**","/api/replys/**"}).permitAll()
-                                .antMatchers(HttpMethod.POST, new String[]{"/signup","/signin"}).permitAll()
-                                .anyRequest().authenticated()
-                )
                 //로그아웃 기능 허용
                 .logout()
                 // 로그아웃 요청 처리 URL
@@ -88,9 +74,13 @@ public class WebSecurityConfig {
                 // "접근 불가" 페이지 URL 설정
                 .accessDeniedPage("/forbidden.html")
                 .and()
+                // 토큰을 활용하면 세션이 필요 없으므로 STATELESS로 설정하여 Session을 사용하지 않는다.
+                // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);;
-
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilter(corsFilter); // 모든 요청이 CORS 정책에서 우회하도록 설정.;
         return http.build();
     }
 

@@ -37,7 +37,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         System.out.println("비밀번호 확인 전");
         // 비밀번호 확인
        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            System.out.println("비밀번호 틀림");  // 안들어오는데?
+            System.out.println("비밀번호 틀림");
             throw new BadCredentialsException(userDetails.getUsername() + "Invalid password");
         }
 

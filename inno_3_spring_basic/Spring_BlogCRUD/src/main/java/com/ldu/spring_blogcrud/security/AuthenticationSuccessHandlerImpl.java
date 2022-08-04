@@ -2,6 +2,7 @@ package com.ldu.spring_blogcrud.security;
 
 import com.ldu.spring_blogcrud.global.config.redis.RedisService;
 import com.ldu.spring_blogcrud.security.provider.JwtProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,10 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 
 @Component
+@RequiredArgsConstructor
 public class AuthenticationSuccessHandlerImpl extends SavedRequestAwareAuthenticationSuccessHandler {
-    @Autowired
     private RedisService redisService;
-    @Autowired
     private JwtProvider jwtProvider;
 
     // 토큰에 대한 인증을 실행.

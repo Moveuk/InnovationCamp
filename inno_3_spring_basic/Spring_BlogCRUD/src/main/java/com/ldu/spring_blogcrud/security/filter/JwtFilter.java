@@ -4,7 +4,6 @@ import com.ldu.spring_blogcrud.global.config.redis.RedisService;
 import com.ldu.spring_blogcrud.security.UserDetailsImpl;
 import com.ldu.spring_blogcrud.security.provider.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -15,6 +14,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -24,6 +26,18 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
 
+    private static final List<String> EXCLUDE_URL =
+            Collections.unmodifiableList(
+                    Arrays.asList(
+                            "/h2-console",
+                            "/api/posts",
+                            "/api/posts/**",
+                            "/api/replys",
+                            "/signup",
+                            "/signin",
+                            "/favicon.ico",
+                            "/error"
+                    ));
     /**
      * 토큰 인증 정보를 현재 쓰레드의 SecurityContext 에 저장하는 역할 수행
      */
@@ -66,7 +80,12 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//        return true; // 모두 다 걸러짐.
+        return EXCLUDE_URL.stream().anyMatch(url -> request.getServletPath().startsWith(url));
+    }
+/**
      * Request Header에서 토큰 추출
      * 본인은 Access-Token, Refresh-Token로 헤더에 저장해두었으므로 바로 꺼내씀.
      */
